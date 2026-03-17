@@ -1,0 +1,8 @@
+## Agentic Advertising: How the initiatives interact
+
+### Architecture (who does what)
+![Agentic Architecture](docs/diagrams/agentic-architecture.svg)
+
+### End-to-end workflow (how a deal + audience validation happens)
+![Agentic Workflow](docs/diagrams/agentic-workflow.svg)
+

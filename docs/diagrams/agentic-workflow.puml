@@ -1,0 +1,41 @@
+@startuml
+title IAB Tech Lab Agentic Advertising - End-to-End Workflow
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam sequenceMessageAlign center
+
+actor Planner as P
+participant "Buyer Agent" as BA
+participant "Agentic Direct\n(A2A + MCP for OpenDirect)" as AD
+participant "Seller Agent" as SA
+participant "Agentic Audiences / UCP\n(embeddings)" as UCP
+
+P -> BA : Campaign brief + constraints\n(budget, formats, KPI, dates)
+
+== Audience planning (data plane) ==
+BA -> UCP : Build intent representation\n(embedding) + targeting constraints
+UCP --> BA : Audience embedding + planning artifacts
+
+== Inventory discovery (control plane) ==
+BA -> AD : Discover inventory\n(query / tools)
+AD -> SA : OpenDirect list/search\nproducts/avails/pricing
+SA --> AD : Candidate products + terms
+AD --> BA : Options + terms
+
+== Audience fit / validation (data plane) ==
+BA -> UCP : Share audience embedding\nfor validation
+UCP -> SA : Exchange embedding\n& policy constraints
+SA --> BA : Fit decision\n(accept/reject + guidance)
+
+== Deal creation (control plane) ==
+BA -> AD : Request deal\n(create order/line)
+AD -> SA : OpenDirect create/confirm\n(negotiate if needed)
+SA --> AD : Deal confirmation + Deal ID
+AD --> BA : Deal ID for DSP activation
+
+== Post-campaign learning (data plane) ==
+SA -> UCP : Reinforcement/response signals\n(outcomes)
+UCP --> BA : Feedback for optimization\n(next flight / future planning)
+
+@enduml
+

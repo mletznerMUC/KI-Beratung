@@ -1,0 +1,42 @@
+@startuml
+' Rendered automatically by GitHub Actions
+title IAB Tech Lab Agentic Advertising - Architecture (Control vs Data Plane)
+left to right direction
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam componentStyle rectangle
+
+rectangle "CONTROL PLANE (execution)" as CP #E8F4FF {
+  [Agentic Direct\n(A2A + MCP + OpenDirect v2.1)] as AD
+  [Buyer Agent\n(buy-side automation)] as BA
+  [Seller Agent\n(supply-side automation)] as SA
+}
+
+rectangle "DATA PLANE (signals)" as DP #FFF3E6 {
+  [Agentic Audiences / UCP\n(identity + context + reinforcement)\nembeddings / vectors] as UCP
+}
+
+BA --> AD : discover inventory\ncreate/update orders\n(OpenDirect ops via MCP/A2A)
+AD --> SA : list/search products\nnegotiate/confirm\n(OpenDirect v2.1)
+SA --> AD : Deal ID + confirmation
+AD --> BA : Deal ID
+
+BA --> UCP : create/share\nintent embedding
+UCP --> SA : audience validation\n(vector similarity / policy)
+SA --> UCP : reinforcement/response\n(outcomes, feedback)
+
+note right of UCP
+UCP/Agentic Audiences is the "signal fabric":
+- identity
+- context
+- reinforcement
+shared as embeddings to enable fast agent-to-agent decisions.
+end note
+
+note left of AD
+Agentic Direct is the "execution fabric":
+schema-driven tools from OpenAPI (OpenDirect),
+exposed to agents via MCP + A2A routing/task mgmt.
+end note
+@enduml
+
